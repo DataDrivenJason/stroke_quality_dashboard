@@ -1,0 +1,83 @@
+# ---------------------------------------------------------------------------
+# Patient data must never reach this repository.
+#
+# The rules below block every common extract format outright, before the
+# usual Python ignores. This is deliberate belt-and-braces: the app is
+# designed to be pointed at a real clinical extract, and the failure mode
+# of a public repo is unrecoverable — a force-push does not remove a blob
+# from a fork, a clone, or GitHub's cache.
+#
+# If you ever genuinely need to commit a tabular file (a lookup table, a
+# tiny fixture), add it with `git add -f path/to/file.csv` and satisfy
+# yourself first that it contains no patient-level data. Do not weaken
+# these patterns.
+# ---------------------------------------------------------------------------
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.xlsx
+*.xlsm
+*.xls
+*.dta
+*.sav
+*.sas7bdat
+*.db
+*.sqlite
+*.sqlite3
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+
+# The generated demonstration dataset lands here on first run.
+data/*
+!data/.gitkeep
+
+# Anything obviously local or identifiable
+*extract*
+*patient*
+*phi*
+*identifiable*
+secrets.toml
+.streamlit/secrets.toml
+.env
+.env.*
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+venv/
+.venv/
+env/
+ENV/
+.python-version
+
+# Testing and tooling
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Editors and OS
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini

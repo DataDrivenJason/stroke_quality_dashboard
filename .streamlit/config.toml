@@ -1,0 +1,23 @@
+[theme]
+# The chart palette in core/viz.py is validated against these surfaces.
+# Switching base to "dark" also switches the chart palette automatically
+# (core.viz.palette() reads st.context.theme on Streamlit 1.46+).
+base = "light"
+primaryColor = "#2a78d6"
+backgroundColor = "#fcfcfb"
+secondaryBackgroundColor = "#f2f1ed"
+textColor = "#0b0b0b"
+font = "sans serif"
+
+[client]
+# Hides the "Deploy" button and developer options. Right for anything
+# other people will open; set to "developer" while working on it locally.
+toolbarMode = "minimal"
+showErrorDetails = "full"
+
+[server]
+headless = true
+maxUploadSize = 500
+
+[browser]
+gatherUsageStats = false
