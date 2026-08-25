@@ -75,8 +75,8 @@ with c2:
         "hours, usually for a nameable reason.\n\n"
         "Improving a median moves everyone slightly. Removing a tail moves a few "
         "patients enormously, and is almost always the better return.")
-    st.dataframe(stage_df[["Stage", "n", "Median (min)", "90th centile"]].round(0),
-                 hide_index=True, width="stretch")
+    ui.df(stage_df[["Stage", "n", "Median (min)", "90th centile"]].round(0),
+                 hide_index=True)
 
 # ---------------------------------------------------------------------------
 # Control chart for a selected hyperacute indicator
@@ -163,7 +163,7 @@ with hc2:
             f'in-hours patient — a robust estimate of how much longer a typical '
             f'patient waits out of hours, unaffected by the extreme tail that would '
             f'drag a difference in means.</div>', unsafe_allow_html=True)
-    st.dataframe(counts.fillna(0).astype(int), width="stretch")
+    ui.df(counts.fillna(0).astype(int))
 
 # ---------------------------------------------------------------------------
 # Distribution
@@ -204,14 +204,14 @@ with dc2:
         "The distribution shows both: where the bulk sits, and how long the tail "
         "runs past the threshold.")
     if len(vals) > 10:
-        st.dataframe(pd.DataFrame({
+        ui.df(pd.DataFrame({
             "Statistic": ["n", "Median", "75th centile", "90th centile",
                           "Within 60 min", "Beyond 90 min"],
             "Value": [f"{len(vals):,}", f"{vals.median():.0f} min",
                       f"{vals.quantile(.75):.0f} min", f"{vals.quantile(.90):.0f} min",
                       f"{100 * (vals <= 60).mean():.1f}%",
                       f"{100 * (vals > 90).mean():.1f}%"],
-        }), hide_index=True, width="stretch")
+        }), hide_index=True)
 
 # ---------------------------------------------------------------------------
 # Site comparison

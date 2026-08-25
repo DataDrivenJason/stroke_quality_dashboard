@@ -80,11 +80,11 @@ with c2:
         "completely different causes and completely different fixes, and a single "
         "'minutes per day' average hides both.")
 
-st.dataframe(
+ui.df(
     cascade[["Discipline", "Patient-days applicable", "Days with any therapy",
              "Days meeting 45 minutes", "% of days delivered",
              "% of days at 45 min", "Median min/day"]].round(1),
-    hide_index=True, width="stretch",
+    hide_index=True,
     column_config={
         "Patient-days applicable": st.column_config.NumberColumn(format="%d"),
         "Days with any therapy": st.column_config.NumberColumn(format="%d"),
@@ -172,7 +172,7 @@ with wc2:
     piv.columns = ["Weekday", "Weekend"]
     piv["Weekend as % of weekday"] = 100 * piv["Weekend"] / piv["Weekday"]
     piv.index = [DISC[i] for i in piv.index]
-    st.dataframe(piv.round(1), width="stretch")
+    ui.df(piv.round(1))
 
     lost = float(by_dow.loc[by_dow["dow"].isin(["Sat", "Sun"]), "applicable"].sum())
     wkday_rate = float(
@@ -238,7 +238,7 @@ with ac2:
             "Median (h)": f"{vals.median():.0f}",
             "Within 72h": f"{100 * (vals <= 72).mean():.1f}%",
         })
-    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+    ui.df(pd.DataFrame(rows), hide_index=True)
     st.markdown(
         "**Watch the denominator, not just the rate.** 'Needing input' is a "
         "clinical judgement recorded by the service being measured. A team under "

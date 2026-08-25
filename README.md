@@ -230,14 +230,18 @@ shipping — do not eyeball it.
 
 ## Tested against
 
-| Python | numpy | pandas | scipy |
-|---|---|---|---|
-| 3.11 | 1.26.4 | 2.2.3 | 1.13.1 |
-| 3.12 | latest | 2.3.x | latest |
-| 3.12 / 3.13 | latest | 3.x | latest |
+| Python | streamlit | numpy | pandas | scipy |
+|---|---|---|---|---|
+| 3.11 | 1.36.0 | 1.26.4 | 2.2.3 | 1.13.1 |
+| 3.12 | 1.36.0 | latest | latest | latest |
+| 3.12 | latest | latest | 2.3.x | latest |
+| 3.12 / 3.13 | latest | latest | 3.x | latest |
 
-CI runs the full suite on all four combinations plus a boot check that the app
-actually serves, on every push.
+The floors in `requirements.txt` are the oldest versions the suite has actually
+been run against, not guesses — CI re-pins and re-tests every one of them on
+each push, alongside a check that the app boots and serves. Note that pandas 3.0
+was a breaking release and Streamlit deprecated `use_container_width` in 1.49;
+both are handled, and both are covered by a job rather than by hope.
 
 ---
 

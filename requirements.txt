@@ -1,5 +1,18 @@
+# Floors here are the oldest versions the test suite has actually been run
+# against, not guesses. CI pins and re-tests them on every push, so a claim
+# that stops being true fails the build rather than reaching a user.
+#
+# Verified combinations:
+#   streamlit 1.36.0  numpy 1.26.4  pandas 2.2.3  scipy 1.13.1   (py3.11)
+#   streamlit 1.62.0  numpy 2.2.6   pandas 2.3.3  scipy 1.17.1   (py3.12)
+#   streamlit 1.62.0  numpy 2.4.4   pandas 3.0.2  scipy 1.17.1   (py3.13)
+#
+# streamlit 1.36 is the floor because the app uses st.navigation/st.Page,
+# introduced there. Newer width APIs are used with a fallback (core/ui.df,
+# core/viz.show), so no higher floor is needed.
+
 streamlit>=1.36
-pandas>=2.1
+pandas>=2.2
 numpy>=1.26
 plotly>=5.20
 scipy>=1.11

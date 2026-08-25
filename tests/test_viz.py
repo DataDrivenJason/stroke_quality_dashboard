@@ -60,6 +60,24 @@ def test_fmt_num_handles_every_magnitude():
     assert viz.fmt_num(None) == "—"
 
 
+def test_signal_labels_never_collide():
+    """Consecutive signalling points would otherwise stack their labels into
+    unreadable runs like '53.653.8'. Labels must be at least two periods
+    apart and capped at four."""
+    v = [50.0] * 40
+    for i in range(10, 16):            # six consecutive signals
+        v[i] = 90.0
+    res = spc.xmr(v, x=pd.date_range("2024-01-01", periods=40, freq="MS"),
+                  screen_mr=False)
+    fig = viz.control_chart(res)
+    notes = [a for a in fig.layout.annotations if a.text]
+    assert len(notes) <= 4
+    xs = sorted(pd.to_datetime([a.x for a in notes]))
+    gaps = [(b - a).days for a, b in zip(xs, xs[1:])]
+    assert all(g >= 55 for g in gaps), gaps      # >= 2 monthly periods apart
+    _render(fig)
+
+
 @pytest.mark.parametrize("n_signals", [0, 1, 3, 6, 7, 20])
 def test_control_chart_renders_at_every_signal_count(n_signals):
     """The regression test for the d3-format bug: the direct-label branch

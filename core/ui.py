@@ -84,6 +84,24 @@ def setup(page_title: str, icon: str = "◔") -> None:
 
 
 # ---------------------------------------------------------------------------
+def df(data, **kw):
+    """st.dataframe that spans its container on old and new Streamlit alike.
+
+    Streamlit 1.49 replaced ``use_container_width=True`` with
+    ``width="stretch"``. Passing the new form to an older build raises
+    ``TypeError: 'str' object cannot be interpreted as an integer``, and
+    passing the old form to a new build prints a deprecation warning.
+    Rather than pinning a high floor -- users on a conda environment they
+    did not choose are a real constituency -- try the new API and fall
+    back once.
+    """
+    kw.pop("width", None)
+    try:
+        return st.dataframe(data, width="stretch", **kw)
+    except TypeError:
+        return st.dataframe(data, use_container_width=True, **kw)
+
+
 def get_tables() -> dict[str, pd.DataFrame]:
     if "tables" not in st.session_state:
         with st.spinner("Generating the demonstration dataset…"):
@@ -396,8 +414,8 @@ def methods_block(res: spc.ChartResult, key: str, f: Filters,
                 if thr.ambition is not None:
                     rows.append(("Stretch", f"{fmt(thr.ambition, spec.unit)}"
                                             f"{unit_suffix(spec.unit)}"))
-            st.dataframe(pd.DataFrame(rows, columns=["", "Value"]),
-                         hide_index=True, width="stretch")
+            df(pd.DataFrame(rows, columns=["", "Value"]),
+                         hide_index=True)
             if thr.provenance:
                 st.caption(f"Target provenance: {thr.provenance}")
 
@@ -445,7 +463,7 @@ def signal_table(res: spc.ChartResult) -> None:
     out["x"] = pd.to_datetime(out["x"]).dt.strftime("%b %Y")
     out.columns = ["Period", "Value", "Process mean", "Lower limit",
                    "Upper limit", "Rule broken"]
-    st.dataframe(out.round(2), hide_index=True, width="stretch")
+    df(out.round(2), hide_index=True)
 
 
 def table_view(res: spc.ChartResult, label: str = "Table view") -> None:
@@ -461,7 +479,7 @@ def table_view(res: spc.ChartResult, label: str = "Table view") -> None:
                                   "lcl": "Lower limit", "ucl": "Upper limit",
                                   "special": "Special cause", "rule_text": "Rule",
                                   "numerator": "Numerator", "denominator": "Denominator"})
-        st.dataframe(out.round(2), hide_index=True, width="stretch")
+        df(out.round(2), hide_index=True)
         st.download_button("Download this indicator as CSV",
                            out.to_csv(index=False).encode(),
                            file_name=f"{res.label or 'indicator'}.csv",

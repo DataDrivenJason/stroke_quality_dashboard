@@ -186,7 +186,7 @@ with cc[2]:
             st.markdown(f"**{r['Indicator']}** — {r['Latest']}{r['Unit']}")
 
 with st.expander("Full indicator summary"):
-    st.dataframe(summary.drop(columns="_priority"), hide_index=True, width="stretch")
+    ui.df(summary.drop(columns="_priority"), hide_index=True)
     st.download_button("Download scorecard as CSV",
                        summary.drop(columns="_priority").to_csv(index=False).encode(),
                        file_name="stroke_scorecard.csv", mime="text/csv")

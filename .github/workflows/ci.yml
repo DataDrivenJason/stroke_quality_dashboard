@@ -19,8 +19,11 @@ jobs:
           # public repo whose requirements claim a range nobody has tested
           # collects issues on day one.
           - python: "3.11"
-            label: "pinned floor (pandas 2.2, numpy 1.26)"
-            pins: "numpy==1.26.4 pandas==2.2.3 scipy==1.13.1"
+            label: "pinned floor (streamlit 1.36, pandas 2.2, numpy 1.26)"
+            pins: "streamlit==1.36.0 numpy==1.26.4 pandas==2.2.3 scipy==1.13.1"
+          - python: "3.12"
+            label: "streamlit floor"
+            pins: "streamlit==1.36.0"
           - python: "3.12"
             label: "pandas 2.x"
             pins: "'pandas>=2.3,<3'"

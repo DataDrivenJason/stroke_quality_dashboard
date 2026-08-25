@@ -219,13 +219,24 @@ def control_chart(res: ChartResult, *, height: int = 400, title: str = "",
     # -- selective direct labels: only the signals ---------------------------
     if annotate_signals:
         sig = f[f["special"]]
-        if 0 < len(sig) <= 6:
-            for _, row in sig.iterrows():
+        if 0 < len(sig) <= 8:
+            # Label selectively. Consecutive signalling points sit close
+            # enough that their labels collide into unreadable runs like
+            # "53.653.8", which is worse than no label at all. Require a
+            # gap of at least two periods since the last label, and stop
+            # at four -- the axis and the tooltip carry the rest.
+            last_labelled = -99
+            labelled = 0
+            for idx, row in sig.iterrows():
+                if idx - last_labelled < 2 or labelled >= 4:
+                    continue
                 fig.add_annotation(
                     x=pd.to_datetime(row["x"]) if hasattr(row["x"], "year") else row["x"],
                     y=row["value"], text=fmt_num(row["value"]),
                     showarrow=False, yshift=16 if row["special_dir"] > 0 else -16,
                     font=dict(size=10.5, color=p["ink2"]))
+                last_labelled = idx
+                labelled += 1
 
     lay = _layout(p, height, title, ytitle=res.unit)
     fig.update_layout(**lay)

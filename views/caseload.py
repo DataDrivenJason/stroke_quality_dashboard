@@ -275,7 +275,7 @@ with w2:
                      "90th centile": f"{sub2.quantile(0.9):.1f}",
                      "Seen day 0–1": f"{100 * (sub2 <= 1).mean():.0f}%",
                      "Not seen before day 5": f"{100 * (sub2 > 5).mean():.0f}%"})
-    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+    ui.df(pd.DataFrame(rows), hide_index=True)
     st.markdown(
         "This measures the wait to a *delivered* session, which is a harder and "
         "more honest test than time to assessment. A patient can be assessed "

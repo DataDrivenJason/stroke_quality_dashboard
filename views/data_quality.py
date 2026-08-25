@@ -43,7 +43,7 @@ with tab_report:
         c1.metric("Errors", n_err)
         c2.metric("Warnings", n_warn)
         c3.metric("Notes", int((df["Severity"] == "Info").sum()))
-        st.dataframe(df, hide_index=True, width="stretch")
+        ui.df(df, hide_index=True)
 
     st.markdown(
         "**Validation here is advisory, never blocking.** Real extracts are "
@@ -246,9 +246,9 @@ with tab_load:
                 if errors:
                     st.error(f"{len(errors)} blocking problem(s) — see below. "
                              "The data was not loaded.")
-                    st.dataframe(pd.DataFrame(
+                    ui.df(pd.DataFrame(
                         [{"Table": i.table, "Column": i.column, "Issue": i.message}
-                         for i in errors]), hide_index=True, width="stretch")
+                         for i in errors]), hide_index=True)
                 else:
                     for k in list(st.session_state.keys()):
                         if str(k).startswith("pt::"):
@@ -271,7 +271,7 @@ with tab_load:
     st.markdown("### The schema")
     for name, schema in loaders.SCHEMAS.items():
         with st.expander(f"`{name}` — {len(schema)} columns"):
-            st.dataframe(pd.DataFrame(
+            ui.df(pd.DataFrame(
                 [{"Column": c, "Type": k, "Required": "yes" if r else "no",
                   "Description": d} for c, (k, r, d) in schema.items()]),
-                hide_index=True, width="stretch")
+                hide_index=True)

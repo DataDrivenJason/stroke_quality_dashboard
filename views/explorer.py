@@ -137,8 +137,8 @@ show_cols = ["admission_id", "site", "arrival_datetime", "age", "sex", "stroke_t
              "slt_assess_hours", "los_days", "discharge_destination", "mrs_discharge"]
 disp = cohort[show_cols].copy()
 disp["arrival_datetime"] = disp["arrival_datetime"].dt.strftime("%Y-%m-%d %H:%M")
-st.dataframe(disp.sort_values("arrival_datetime", ascending=False).round(1),
-             hide_index=True, width="stretch", height=320)
+ui.df(disp.sort_values("arrival_datetime", ascending=False).round(1),
+             hide_index=True, height=320)
 st.download_button("Download this cohort as CSV", cohort.to_csv(index=False).encode(),
                    file_name="stroke_cohort.csv", mime="text/csv")
 
@@ -177,7 +177,7 @@ with p1:
             events.append({"Event": label, "Minutes from clock start": float(minutes),
                            "Hours": float(minutes) / 60})
     ev = pd.DataFrame(events).sort_values("Minutes from clock start")
-    st.dataframe(ev.round(1), hide_index=True, width="stretch")
+    ui.df(ev.round(1), hide_index=True)
 
 with p2:
     p = viz.palette()
@@ -216,12 +216,12 @@ if not psess.empty:
     tot["% of days delivered"] = 100 * tot["attended"] / tot["applicable"].clip(lower=1)
     t1, t2 = st.columns([2, 3], gap="large")
     with t1:
-        st.dataframe(tot.round(1), hide_index=True, width="stretch")
+        ui.df(tot.round(1), hide_index=True)
     with t2:
         if not reasons.empty:
             rc = reasons.groupby(["discipline", "missed_reason"], observed=True).size() \
                 .rename("days").reset_index()
-            st.dataframe(rc, hide_index=True, width="stretch")
+            ui.df(rc, hide_index=True)
         else:
             st.caption("No missed sessions recorded for this admission.")
 
@@ -250,7 +250,7 @@ for label, fn in (
 
 o1, o2 = st.columns([2, 3], gap="large")
 with o1:
-    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+    ui.df(pd.DataFrame(rows), hide_index=True)
 with o2:
     both = pd.concat([cohort.assign(_grp="Cohort"), rest.assign(_grp="Everyone else")])
     from core.metrics import mrs_distribution

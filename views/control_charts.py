@@ -267,7 +267,7 @@ with tab_funnel:
             "For mortality and functional outcome, a risk-adjusted funnel — "
             "plotting observed over expected from a model on age, NIHSS, "
             "pre-stroke mRS and stroke type — is the minimum defensible display.")
-        st.dataframe(fn["points"].round(2), hide_index=True, width="stretch")
+        ui.df(fn["points"].round(2), hide_index=True)
 
 # ===========================================================================
 with tab_rare:
@@ -362,7 +362,7 @@ with tab_rules:
         rows.append({"Rule": rid, "Detects": text,
                      "NHS Making Data Count": "yes" if in_nhs else "—",
                      "Nelson": "yes" if in_nelson else "—"})
-    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+    ui.df(pd.DataFrame(rows), hide_index=True)
 
     st.markdown(
         "**Rules 6 and 7 are the interesting ones.** Rule 6 fires when fifteen "
