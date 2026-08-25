@@ -9,8 +9,7 @@ switchable SSNAP / Irish national standard, a full statistical process control t
 with NHS *Making Data Count* variation and assurance icons, and a therapy layer built
 for the PT, OT and SLT services rather than bolted onto a medical dashboard.
 
-**[▶ Live demo](https://USERNAME-stroke-quality-dashboard.streamlit.app)** ·
-**[Methods](METHODS.md)** — the statistics, in full
+
 
 > All data shipped with this app is **simulated**. It is realistic in structure and
 > must never be quoted as evidence about any real service.
