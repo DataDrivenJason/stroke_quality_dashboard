@@ -27,16 +27,13 @@ re-labels and re-targets 39 indicators without touching a line of calculation.
 
 **2. Treats variation properly.** XmR, p and Laney p′, u and u′, c, t and g charts,
 funnel plots with overdispersion adjustment, CUSUM, baseline freezing and phase
-breaks — with *Making Data Count* variation and assurance icons on every indicator.
+breaks: with *Making Data Count* variation and assurance icons on every indicator.
 No RAG ratings, no month-on-month arrows.
 
 **3. Builds the therapy layer for therapists.** PT, OT and SLT get dose and frequency
 measured against a real denominator of opportunity, missed-session reasons split into
 capacity and patient causes, a demand-versus-capacity model with its assumptions on
 the page rather than buried, and caseload measured per *available* WTE.
-
-Every statistical choice is explained in the interface itself — each chart carries a
-"How this indicator is built" panel with the formulae and the reasons.
 
 ---
 
@@ -61,7 +58,7 @@ pytest tests/ -q      # 154 tests
 
 ## The pages
 
-### Control charts — the workbench
+### Control charts 
 
 Any indicator, any chart type, with baseline freezing, phase breaks, a change-point
 suggester, CUSUM, funnel plots, rare-event t- and g-charts, and the rule sets laid out
@@ -69,7 +66,7 @@ side by side.
 
 ![Control charts](docs/screenshots/02-control-charts.png)
 
-### Therapy dose — PT, OT and SLT
+### Therapy dose 
 
 The dose cascade (applicable days → days delivered → days meeting 45 minutes), the
 weekend effect quantified in minutes, time to first assessment, and a dose–outcome
@@ -77,7 +74,7 @@ view with the confounding made explicit rather than hidden.
 
 ![Therapy dose](docs/screenshots/03-therapy-dose.png)
 
-### Caseload and capacity — the therapy manager's view
+### Caseload and capacity 
 
 Caseload per *available* WTE, demand against capacity in minutes, missed-session
 Pareto split by cause, waiting time to first delivered session, and vacancy against
@@ -103,9 +100,8 @@ denominator drift, and a digit-preference check for rounded timings.
 
 ### Also
 
-**Service overview** — the board scorecard, indicators sorted into *deteriorating*,
-*stable but failing* and *improving*, plus funnel comparison and an mRS shift plot.
-**Patient explorer** — drill from a signal down to the records behind it.
+**Service overview**
+**Patient explorer**
 
 ---
 
@@ -119,9 +115,6 @@ The app is a standard Streamlit project and deploys as-is on
 3. **New app** → pick this repo, branch `main`, main file `app.py`.
 4. Deploy. It redeploys automatically on every push to `main`.
 
-No secrets, no database and no environment variables are required — the app generates
-its own demonstration data on first run.
-
 **If you point it at real data, do not deploy it publicly.** Community Cloud apps have
 no authentication. Run it behind your organisation's infrastructure instead; a
 `Dockerfile` is a small addition if you need one.
@@ -133,7 +126,7 @@ no authentication. Run it behind your organisation's infrastructure instead; a
 Two files, or two SQL views. Download the template and data dictionary from
 **Data quality → Load your own data**, or see `core/loaders.py` for the full schema.
 
-### `admissions` — one row per stroke admission
+### `admissions` 
 
 Key columns: `admission_id`, `site`, `arrival_datetime` (clock start), `age`,
 `stroke_type`, `nihss`, `prestroke_mrs`, `door_to_ct_min`, `thrombolysed`,
@@ -142,36 +135,18 @@ Key columns: `admission_id`, `site`, `arrival_datetime` (clock start), `age`,
 `pt_assess_hours` / `ot_assess_hours` / `slt_assess_hours`, `los_days`,
 `died_inpatient`, `discharge_destination`, `mrs_discharge`.
 
-### `sessions` — one row per **applicable patient-day per discipline**
+### `sessions` 
 
 Not one row per delivered session. This is the single most important modelling choice
 in the app.
 
-A table of attendances cannot answer *"on what proportion of days did this patient
-receive therapy?"*, because the denominator — days on which therapy should have
-happened — is not in it. Services that record only delivered sessions can never
-measure their own reliability, and usually discover this at the moment they are asked
-to prove it.
 
-So `applicable` must be TRUE for every day therapy was indicated, whether or not it
-happened, and `minutes` is 0 on days it did not. `missed_reason` is the field that
-separates a capacity problem from a clinical one, and it is worth starting to collect
-even if nothing else here changes.
-
-### `staffing` — optional, one row per week per site per discipline
+### `staffing`
 
 `wte_funded`, `wte_vacant`, `wte_absent`, `wte_available`. Without it everything works
 except the caseload and capacity page.
 
 ### A note on patient data
-
-`.gitignore` blocks every common extract format outright — `.csv`, `.parquet`,
-`.xlsx`, `.sav`, `.dta`, `.sqlite` and more — before the usual Python ignores. This is
-deliberate: the failure mode of committing patient data to a public repo is
-unrecoverable, because a force-push does not remove a blob from a fork, a clone, or
-GitHub's cache. Do not weaken those patterns.
-
----
 
 ## Targets
 
@@ -211,7 +186,7 @@ tests/
 
 **Adding an indicator.** Add a boolean `flag_*` (and a `den_*` cohort if it needs a
 new one) in `core/metrics.derive_flags`, then a `MetricSpec` and its thresholds in
-`core/standards.py`. Nothing else changes — it appears on the scorecard, in the
+`core/standards.py`. Nothing else changes: it appears on the scorecard, in the
 control chart workbench and in the funnel picker automatically.
 
 **Adding a standard.** Add a key to `THRESHOLDS`. The sidebar picks it up.
@@ -220,10 +195,6 @@ control chart workbench and in the funnel picker automatically.
 because it is a modelling commitment rather than a feature. Crude mortality and
 functional-outcome comparisons between sites are close to meaningless without it.
 `METHODS.md` §10 sets out how to do it and what to watch for.
-
-**Rebranding the charts.** `core/viz.py` holds the palette in `LIGHT` and `DARK`
-dicts. Substitute your hues and validate them for colour-vision deficiency before
-shipping — do not eyeball it.
 
 ---
 
@@ -236,25 +207,8 @@ shipping — do not eyeball it.
 | 3.12 | latest | latest | 2.3.x | latest |
 | 3.12 / 3.13 | latest | latest | 3.x | latest |
 
-The floors in `requirements.txt` are the oldest versions the suite has actually
-been run against, not guesses — CI re-pins and re-tests every one of them on
-each push, alongside a check that the app boots and serves. Note that pandas 3.0
-was a breaking release and Streamlit deprecated `use_container_width` in 1.49;
-both are handled, and both are covered by a job rather than by hope.
+
 
 ---
 
-## The demonstration data
 
-It is constructed, not sampled — a service with a *history*. A thrombolysis pathway
-redesign at one site, a period of bed pressure at another, a physiotherapy vacancy at
-a third, a falls cluster, a change to swallow screening, plus permanent weekend and
-winter effects, and four planted recording defects for the data quality page. The
-charts should find all of them, and `tests/test_spc.py` asserts that they do.
-
-Headline rates are calibrated to plausible ranges for a mixed acute stroke population
-— in-hospital mortality about 12%, thrombolysis about 12% of ischaemic strokes,
-median length of stay 11 days — so the dashboard demonstrates against numbers a
-clinician will not immediately reject.
-
-It is simulated. It describes no real service, and no real patient.
